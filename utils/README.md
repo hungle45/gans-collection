@@ -1,0 +1,1 @@
+This utils folder contains helper functions that can be used across multiple modules in the project. These functions simplify common tasks and promote code reusability.
