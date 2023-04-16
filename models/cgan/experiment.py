@@ -23,16 +23,17 @@ def trainer(epochs, generator, discriminator, loader, critic_iteration=5, device
         disc.train()
         gen.train()
 
-        for batch_idx, (real, _) in enumerate(loader):
+        for batch_idx, (real, label) in enumerate(loader):
             real = real.to(device)  # (32,1,28,28)
-            
+            label = label.to(device) # (32,)
+
             for _ in range(critic_iteration):
                 noise = torch.randn((real.size(0), z_dim)).to(device) # (32,100)
-                fake = gen(noise) # (32,1,28,28)
+                fake = gen(noise, label) # (32,1,28,28)
 
                 # train disc: max log(D(real)) + log(1 - D(G(z)))
-                disc_real = disc(real).view(-1) # 32
-                disc_fake = disc(fake).view(-1) # 32
+                disc_real = disc(real, label).view(-1) # 32
+                disc_fake = disc(fake, label).view(-1) # 32
                 lossD_real = criterion(disc_real, torch.ones_like(disc_real))
                 lossD_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
                 lossD = (lossD_real + lossD_fake) / 2
@@ -41,7 +42,7 @@ def trainer(epochs, generator, discriminator, loader, critic_iteration=5, device
                 opt_disc.step()
 
             # train gen: min log(1 - D(G(z))) <-> max log(D(G(z)))
-            output = disc(fake).view(-1)
+            output = disc(fake, label).view(-1)
             lossG = criterion(output, torch.ones_like(output))
             opt_gen.zero_grad()
             lossG.backward()

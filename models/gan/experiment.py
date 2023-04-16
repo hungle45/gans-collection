@@ -5,7 +5,7 @@ import torch
 from torch import  nn, optim
 
 
-def trainer(epochs, generator, discriminator, loader, device='cpu'):
+def trainer(epochs, generator, discriminator, loader, critic_iteration=5, device='cpu'):
     gen = generator.to(device)
     disc = discriminator.to(device)
 
@@ -24,19 +24,21 @@ def trainer(epochs, generator, discriminator, loader, device='cpu'):
         gen.train()
 
         for batch_idx, (real, _) in enumerate(loader):
-            noise = torch.randn((batch_size, z_dim)).to(device) # (32,100)
             real = real.to(device)  # (32,1,28,28)
-            fake = gen(noise) # (32,1,28,28)
+            
+            for _ in range(critic_iteration):
+                noise = torch.randn((real.size(0), z_dim)).to(device) # (32,100)
+                fake = gen(noise) # (32,1,28,28)
 
-            # train disc: max log(D(real)) + log(1 - D(G(z)))
-            disc_real = disc(real).view(-1) # 32
-            disc_fake = disc(fake).view(-1) # 32
-            lossD_real = criterion(disc_real, torch.ones_like(disc_real))
-            lossD_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
-            lossD = (lossD_real + lossD_fake) / 2
-            opt_disc.zero_grad()
-            lossD.backward(retain_graph=True)
-            opt_disc.step()
+                # train disc: max log(D(real)) + log(1 - D(G(z)))
+                disc_real = disc(real).view(-1) # 32
+                disc_fake = disc(fake).view(-1) # 32
+                lossD_real = criterion(disc_real, torch.ones_like(disc_real))
+                lossD_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
+                lossD = (lossD_real + lossD_fake) / 2
+                opt_disc.zero_grad()
+                lossD.backward(retain_graph=True)
+                opt_disc.step()
 
             # train gen: min log(1 - D(G(z))) <-> max log(D(G(z)))
             output = disc(fake).view(-1)
