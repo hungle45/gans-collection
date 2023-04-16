@@ -14,7 +14,9 @@ In the adversarial process, there are *two* models:
 
 Loss function:
 
-$$min_G max_D V(D,G) = E_{x~p_x(x)}[log(D(x)] + E_{z~p_z(z)}[log(1-D(G(z))]$$
+$$min_G max_D V(D,G) = E_{x \sim p_{data}(x)}[log(D(x))] + E_{z \sim p_z(z)}[log(1-D(G(z)))]$$
+
+Training tips:
 
 - To prevent $D$ from becoming overfit on the finite dataset, we can alternate between $k$ steps of optimizing $D$ and one step of optimizing $G$.
 -  In early learning, $G$ is poor, so $D$ can easily reject samples that come from it. This leads $log(1-D(G(z))$ to saturate. To prevent this problem, we can train $G$ to maximize $log(D(G(z))$ instead.
