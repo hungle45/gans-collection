@@ -9,7 +9,7 @@
 ## Summary
 There is no way to control the generated data in the unconditional model. However, the data generation process can be directed by conditioning the model, such as by adding information based on the class label or on some part of the data for inpainting. Following this idea, the authors propose conditional-GANs, a conditional version of generative adversarial networks.
 
-In conditional GANs, both the generator and discriminator are conditioned on some extra information y, which is fed into those models as additional layer input.
+In conditional GANs, both the generator and discriminator are conditioned on some extra information `y`, which is fed into those models as additional layer input.
 
 Loss function:
 

@@ -5,8 +5,8 @@ import numpy as np
 class Discriminator(nn.Module):
     def __init__(self, im_shape=(1,28,28), inner_feature=256):
         '''
-            input: N * channel * height * width
-            output: N * 1
+            input: (N, channel, height, width)
+            output: (N, 1)
         '''
         super().__init__()
         self.disc = nn.Sequential(

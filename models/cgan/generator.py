@@ -7,8 +7,8 @@ class Generator(nn.Module):
     def __init__(self, num_classes, embed_size, z_dim=100, 
                  im_shape=(1,28,28), inner_feature=128):
         '''
-            input: N * z_dim
-            output: N * channel * height * width
+            input: (N, z_dim), (N,)
+            output: (N, channel, height, width)
         '''
         super().__init__()
         self.im_shape = im_shape

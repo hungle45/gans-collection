@@ -8,4 +8,9 @@ from .dcgan import Generator as DCGanGenerator, \
 
 from .cgan import Generator as CGanGenerator, \
                   Discriminator as CGanDiscriminator, \
-                  trainer as CGanTrainer      
+                  trainer as CGanTrainer     
+
+from .pix2pix import Generator as Pix2PixGanGenerator, \
+                  Discriminator as Pix2PixGanDiscriminator, \
+                  trainer as Pix2PixGanTrainer, \
+                  AnimeDataset

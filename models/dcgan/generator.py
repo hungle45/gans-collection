@@ -8,8 +8,8 @@ import numpy as np
 class Generator(nn.Module):
     def __init__(self, z_dim=100, im_shape=(1,32,32), inner_feature=128):
         '''
-            input: N * z_dim
-            output: N * channel * height * width
+            input: (N, z_dim)
+            output: (N, channel, height, width)
         '''
         super().__init__()
         if im_shape[-1] != im_shape[-2]:
@@ -44,7 +44,7 @@ class Generator(nn.Module):
     def _basic_block(self, in_channels, out_channels, kernel_size, stride, padding):
         ''' This block will double the height and width of the feature. '''
         return nn.Sequential(
-            nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride, padding),
+            nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.LeakyReLU(0.2)
         )

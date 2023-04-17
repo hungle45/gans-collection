@@ -7,8 +7,8 @@ import numpy as np
 class Discriminator(nn.Module):
     def __init__(self, im_shape=(1,32,32), inner_feature=128):
         '''
-            input: N * channel * height * width
-            output: N * 1
+            input: (N, channel, height, width)
+            output: (N, 1)
         '''
         super().__init__()
         if im_shape[-1] != im_shape[-2]:
@@ -41,7 +41,7 @@ class Discriminator(nn.Module):
 
     def _basic_block(self, in_channels, out_channels, kernel_size, stride, padding):
         return nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
+            nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.LeakyReLU(0.2)
         )
