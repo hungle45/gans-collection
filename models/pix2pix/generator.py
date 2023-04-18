@@ -75,4 +75,4 @@ class Generator(nn.Module):
         for i, layer in enumerate(self.decoder[1:]):
             x = layer(torch.cat([x, x_skip[i]], 1))
 
-        return self.final(torch.cat([x, x_init], 1))
+        return self.final(torch.cat([x, x_init], 1)) * 0.5 + 0.5

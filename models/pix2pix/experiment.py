@@ -26,7 +26,6 @@ def trainer(epochs, generator, discriminator, train_loader, val_loader=None, sav
         gen.train()
 
         for batch_idx, (x, y) in enumerate(train_loader):
-            if batch_idx > 2: break
             x = x.to(device)
             y = y.to(device)
             

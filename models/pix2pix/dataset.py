@@ -12,7 +12,7 @@ class AnimeDataset(Dataset):
         self.fnames = os.listdir(self.root_dir)
         self.transform = Compose([
             ToTensor(),
-            Resize(256)
+            Resize(256, antialias=True)
         ])
 
     def __len__(self):
