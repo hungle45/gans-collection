@@ -51,4 +51,4 @@ class Generator(nn.Module):
 
     def forward(self, x):
         x = x.view(*x.size(),1,1)
-        return self.gen(x) * 0.5 + 0.5
+        return self.gen(x)

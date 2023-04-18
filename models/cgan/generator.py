@@ -53,7 +53,7 @@ class Generator(nn.Module):
     def forward(self, x, label):
         embed_label = self.embed(label)
         inp = torch.cat([x,embed_label],dim=1).unsqueeze(-1).unsqueeze(-1)
-        return self.gen(inp) * 0.5 + 0.5
+        return self.gen(inp)
 
 
 def test():

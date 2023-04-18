@@ -10,14 +10,17 @@ from torchvision.utils import save_image
 def trainer(epochs, generator, discriminator, train_loader, val_loader=None, save_fig_dir=None, device='cpu'):
     gen = generator.to(device)
     disc = discriminator.to(device)
+    
+    g_scaler = torch.cuda.amp.GradScaler()
+    d_scaler = torch.cuda.amp.GradScaler()
 
     batch_size = train_loader.batch_size
     n_batch = len(train_loader)
 
-    opt_gen = optim.Adam(gen.parameters(), lr=3e-4)
-    opt_disc = optim.Adam(disc.parameters(), lr=3e-4)
-    criterion = nn.BCELoss()
-    l1_loss = nn.L1Loss()
+    opt_gen = optim.Adam(gen.parameters(), lr=2e-4, betas=(0.5, 0.999))
+    opt_disc = optim.Adam(disc.parameters(), lr=2e-4, betas=(0.5, 0.999))
+    bce = nn.BCEWithLogitsLoss()
+    l1 = nn.L1Loss()
 
     for epoch in range(epochs):
         print(f'Epoch {epoch+1}/{epochs}')
@@ -29,26 +32,34 @@ def trainer(epochs, generator, discriminator, train_loader, val_loader=None, sav
             x = x.to(device)
             y = y.to(device)
             
-            y_fake = gen(x)
+            with torch.cuda.amp.autocast():
+                # generate fake colored imgs
+                y_fake = gen(x)
+                # validate real and fake imgs using discriminator
+                D_real = disc(x, y)
+                D_fake = disc(x, y_fake.detach())
+                # calculate fake and real discriminator loss
+                D_real_loss = bce(D_real, torch.ones_like(D_real))
+                D_fake_loss = bce(D_fake, torch.zeros_like(D_fake))
+                # calculate average discriminator loss of fake and real colored image
+                D_loss = (D_real_loss + D_fake_loss) / 2
+            # update weight
+            disc.zero_grad()
+            d_scaler.scale(D_loss).backward()
+            d_scaler.step(opt_disc)
+            d_scaler.update()
 
-            # train disc: max log(D(real)) + log(1 - D(G(z)))
-            disc_real = disc(x,y)
-            disc_fake = disc(x,y_fake)
-            lossD_real = criterion(disc_real, torch.ones_like(disc_real))
-            lossD_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
-            lossD = (lossD_real + lossD_fake) / 2
-            opt_disc.zero_grad()
-            lossD.backward(retain_graph=True)
-            opt_disc.step()
-
-            # train gen: min log(1 - D(G(z))) <-> max log(D(G(z)))
-            output = disc(x, y_fake)
-            lossG = criterion(output, torch.ones_like(output)) + 100*l1_loss(y_fake, y)
+            with torch.cuda.amp.autocast():
+                D_fake = disc(x, y_fake)
+                G_fake_loss = bce(D_fake, torch.ones_like(D_fake))
+                L1 = l1(y_fake, y) * 100
+                G_loss = G_fake_loss + L1
             opt_gen.zero_grad()
-            lossG.backward()
-            opt_gen.step()
+            d_scaler.scale(G_loss).backward()
+            d_scaler.step(opt_gen)
+            d_scaler.update()
 
-            print(f'\r{batch_idx+1}/{n_batch} - lossD: {lossD:.4f} - lossG: {lossG:.4f}',end='')
+            print(f'\r{batch_idx+1}/{n_batch} - lossD: {D_loss:.4f} - lossG: {G_loss:.4f}',end='')
         
         end_time = time.time()
         delta_time = end_time - start_time
@@ -60,30 +71,5 @@ def trainer(epochs, generator, discriminator, train_loader, val_loader=None, sav
             gen.eval()
             y_fake = gen(x)
 
-            save_image(torch.cat([x,y_fake,y],dim=-1),
+            save_image(torch.cat([y_fake,y],dim=-1)*0.5+0.5,
                 os.path.join(save_fig_dir,f'{epoch}.png'))
-
-
-
-
-def main():
-    from dataset import AnimeDataset
-    from discriminator import Discriminator
-    from generator import Generator
-    from torch.utils.data import DataLoader
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    train_dataset = AnimeDataset('data/AnimeData/train/')
-    train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True, num_workers=2)
-
-    val_dataset = AnimeDataset('data/AnimeData/val/')
-    val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=2)
-
-    gen = Generator().to(device)
-    dist = Discriminator().to(device)
-
-    trainer(2, gen, dist, train_loader, val_loader, save_fig_dir='figs', device=device)
-
-
-if __name__ == '__main__':
-    main()

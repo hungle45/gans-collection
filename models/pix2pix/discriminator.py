@@ -20,11 +20,10 @@ class Discriminator(nn.Module):
             in_feature = feature
         
         self.disc = nn.Sequential(
-            nn.Conv2d(im_channel*2, features[0], 4, 2, 1),
+            nn.Conv2d(im_channel*2, features[0], 4, 2, 1, padding_mode='reflect'),
             nn.LeakyReLU(0.2),
             *layers,
             nn.Conv2d(in_feature, 1, 4, 1, 1, padding_mode='reflect'),
-            nn.Sigmoid()
         )
 
 

@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import torch
 from torch.utils.data import Dataset 
-from torchvision.transforms import Resize, Compose, ToTensor
+from torchvision.transforms import Resize, Compose, ToTensor, Normalize
 
 class AnimeDataset(Dataset):
     def __init__(self, root_dir):
@@ -12,7 +12,8 @@ class AnimeDataset(Dataset):
         self.fnames = os.listdir(self.root_dir)
         self.transform = Compose([
             ToTensor(),
-            Resize(256, antialias=True)
+            Resize(256, antialias=None),
+            Normalize(0.5,0.5),
         ])
 
     def __len__(self):
