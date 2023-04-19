@@ -61,9 +61,9 @@ For this task, Anime Sketch Colorization Pair dataset is used. You can download 
 
 **Result**
 <p align="center">
-    <img src="notebooks/pix2pix/figs/output1.png" width="100%"> <br />
-    <img src="notebooks/pix2pix/figs/output2.png" width="100%"> <br />
-    <img src="notebooks/pix2pix/figs/output3.png" width="100%"> <br />
-    <img src="notebooks/pix2pix/figs/output4.png" width="100%"> <br />
+    <img src="notebooks/pix2pix/figs/output1.png" width="640px"> <br />
+    <img src="notebooks/pix2pix/figs/output2.png" width="640px"> <br />
+    <img src="notebooks/pix2pix/figs/output3.png" width="640px"> <br />
+    <img src="notebooks/pix2pix/figs/output4.png" width="640px"> <br />
     <em>1st col: Input / 2nd col: Generated / 3rd col: Target</em>
 </p>
