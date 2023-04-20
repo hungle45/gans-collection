@@ -10,32 +10,6 @@ $ pip install -r requirements.txt
 ```
 
 # Experiment
-## Digits Generation
-For this task, MNIST dataset is used. You can download it from Kaggle [link](https://www.kaggle.com/datasets/hojjatk/mnist-dataset).
-
-### GAN
-**Result**
-<p align="center">
-    <img src="notebooks/gan/figs/output.png" width="400"> <br />
-    <em>Generated digits by GAN</em>
-</p>
-
-### DCGAN
-**Result**
-<p align="center">
-    <img src="notebooks/dcgan/figs/output.png" width="400"> <br />
-    <em>Generated digits by DCGAN</em>
-</p>
-
-
-### CGAN
-**Result**
-<p align="center">
-    <img src="notebooks/cgan/figs/output.png" width="400"> <br />
-    <em>Generated digits by CGAN with conditions 0..9 (from left to right)</em>
-</p>
-
-
 ## Sketch2Color Translation
 ### Anime Sketch Colorization Pair Dataset
 For this task, Anime Sketch Colorization Pair dataset is used. You can download it from Kaggle [link](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair).
@@ -66,4 +40,30 @@ For this task, Anime Sketch Colorization Pair dataset is used. You can download 
     <img src="notebooks/pix2pix/figs/output3.png" width="640px"> <br />
     <img src="notebooks/pix2pix/figs/output4.png" width="640px"> <br />
     <em>1st col: Input / 2nd col: Generated / 3rd col: Target</em>
+</p>
+
+
+## Digits Generation
+For this task, MNIST dataset is used. You can download it from Kaggle [link](https://www.kaggle.com/datasets/hojjatk/mnist-dataset).
+
+### GAN
+**Result**
+<p align="center">
+    <img src="notebooks/gan/figs/output.png" width="400"> <br />
+    <em>Generated digits by GAN</em>
+</p>
+
+### DCGAN
+**Result**
+<p align="center">
+    <img src="notebooks/dcgan/figs/output.png" width="400"> <br />
+    <em>Generated digits by DCGAN</em>
+</p>
+
+
+### CGAN
+**Result**
+<p align="center">
+    <img src="notebooks/cgan/figs/output.png" width="400"> <br />
+    <em>Generated digits by CGAN with conditions 0..9 (from left to right)</em>
 </p>
